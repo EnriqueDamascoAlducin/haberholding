@@ -209,20 +209,22 @@
                 </div>
               </div>
               <!-- /.tab-pane -->
-
+              <!-- adminLte/paginas/usuarios/formularios/registrarUsuario.php
+                  ../../../controladores/usuariosController.php
+            -->
               <div class="tab-pane" id="settings">
-                <form class="form-horizontal">
+                <form class="form-horizontal" action="../../../controladores/usuariosController.php" method="POST" >
                   <div class="form-group">
                     <label for="inputName" class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-10">
-                      <input type="email" class="form-control" id="inputName" placeholder="Name">
+                      <input type="email" class="form-control" id="nombre" name="nombre" placeholder="Name">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="inputEmail" class="col-sm-2 control-label">Email</label>
 
                     <div class="col-sm-10">
-                      <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+                      <input type="email" class="form-control" id="correo" name="correo" placeholder="Email">
                     </div>
                   </div>
                   <div class="form-group">
