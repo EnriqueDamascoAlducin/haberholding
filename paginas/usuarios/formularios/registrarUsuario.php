@@ -44,14 +44,14 @@
                 <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre">
               </li>
               <li class="list-group-item">
-                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Apellido Paterno">
+                <input type="text" id="apellidop" name="apellidop" class="form-control" placeholder="Apellido Paterno">
               </li>
               <li class="list-group-item">
-                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Apellido Materno">
+                <input type="text" id="apellidom" name="apellidom" class="form-control" placeholder="Apellido Materno">
               </li>
             </ul>
 
-            <a href="#" class="btn btn-primary btn-block"><b>Registrar</b></a>
+            <a href="#" class="btn btn-primary btn-block" onclick="getData()"><b>Registrar</b></a>
           </div>
           <!-- /.card-body -->
         </div>
@@ -278,3 +278,18 @@
 </section>
 <!-- /.content -->
 </div>
+
+<script type="text/javascript">
+  function getData(){
+    var nombre;
+    var apellidop;
+    var apellidom;
+    /*nombre = document.getElementById('nombre').value;
+    apellidop = document.getElementById('apellidop').value;
+    apellidom = document.getElementById('apellidom').value;*/
+    nombre = $("#nombre").val();
+    apellidop = $("#apellidop").val();
+    apellidom = $("#apellidom").val();
+    alert(nombre + " " + apellidop + " " + apellidom);
+  }
+</script>
