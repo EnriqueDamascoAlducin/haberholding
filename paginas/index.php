@@ -1,12 +1,13 @@
+<?php include_once 'controladores/finsession.php'; ?>
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 3 | User Profile</title>
+  <title>HaberHolding</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <link rel="icon" href="../dist/img/logo_hh.jpg">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
   <!-- Ionicons -->
@@ -30,7 +31,7 @@
     <ul class="navbar-nav ml-auto">
       <!-- Messages Dropdown Menu -->
       <li class="nav-item dropdown">
-        <a class="nav-link" href="../index.php">
+        <a class="nav-link" href="../">
           <i class="fas fa-sign-out-alt"></i>Salir
         </a>
         
@@ -55,10 +56,14 @@
       <!-- Sidebar user (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src=" ../dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+          <?php if($_SESSION['sexo_usu']==2){ ?>
+            <img src=" ../dist/img/userW.jpg" class="img-circle elevation-2" alt="Mujer">
+          <?php } else{ ?>
+            <img src=" ../dist/img/userM.jpg" class="img-circle elevation-2" alt="Hombre">
+          <?php } ?>
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="#" class="d-block"><?php echo $_SESSION['nombre_usu'] .' ' . $_SESSION['apellidop_usu']?></a>
         </div>
       </div>
 
