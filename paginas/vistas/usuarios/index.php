@@ -12,7 +12,6 @@
 	while ($permiso = $permisosXUsuarioLoggeado->fetch_assoc()) {
 		$permisosActuales[] = $permiso['nombre_permiso'];
 	}
-
 	include_once 'header.php';
 ?>
 
@@ -64,8 +63,8 @@
       <div class="modal-body" id="modalContenido">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" onclick="enviarForm();">Enviar</button>
       </div>
     </div>
   </div>
