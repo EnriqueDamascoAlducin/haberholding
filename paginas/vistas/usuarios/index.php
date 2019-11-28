@@ -1,4 +1,8 @@
 <?php  
+
+	// Zona horaria
+		date_default_timezone_set('America/Mexico_City');
+	//
 	include_once '../../controladores/finsession.php';
 	include_once '../../controladores/conexion.php';
 	$nombreModulo = $_POST['nombre'];
@@ -6,7 +10,6 @@
 	$idModulo = $_POST['id'];
 	$usuario = $_SESSION['usuario'];
 	$usuarios = $con->query("Select id_usu as id, CONCAT(IFNULL(nombre_usu,''),' ',IFNULL(apellidop_usu,''), ' ',IFNULL(apellidom_usu,'')) as nombre, nombre_depto, nombre_puesto,ingreso_usu,noempleado_usu as noempleado FROM usuarios u Inner join departamentos on u.depto_usu = id_depto INNER JOIN puestos on u.puesto_usu = id_puesto WHERE status_usu<>0");
-
 	$permisosXUsuarioLoggeado = $con->query("Select nombre_permiso from permisos_modulos pm INNER JOIN permisos_usuarios pu on pu.permiso_pu = pm.id_permiso where pu.status_pu <>0 and pm.status_permiso<>0 and modulo_permiso=".$idModulo. " and usuario_pu = " . $usuario);
 	$permisosActuales = array();
 	while ($permiso = $permisosXUsuarioLoggeado->fetch_assoc()) {
@@ -14,9 +17,6 @@
 	}
 	include_once 'header.php';
 ?>
-
-
-
 <div id="tabla" >
 	<table class="table DataTable">
 		<thead>
@@ -25,7 +25,7 @@
 				<th>Nombre</th>
 				<th>Departamento</th>
 				<th>Puesto</th>
-				<th>Fecha de Ingreso</th>
+				<th>Antigüedad</th>
 				<th>Acciones</th>
 			</tr>
 		</thead>
@@ -36,7 +36,24 @@
 					<td><?php echo $usuario['nombre']; ?></td>
 					<td><?php echo $usuario['nombre_depto']; ?></td>
 					<td><?php echo $usuario['nombre_puesto']; ?></td>
-					<td><?php echo $usuario['ingreso_usu']; ?></td>
+					<td><?php 
+						$date1 = strtotime($usuario['ingreso_usu']);  // convierte a segundos
+						$date2 = strtotime(date("d-m-Y H:i:00",time())); // convierte a segundos
+						$diff = abs($date2 - $date1);  
+						$años = floor($diff / (365*60*60*24));  //redonde a un numero entetero mas bajo 4.3 años lo redonde a 4
+						$meses = floor(($diff - $años * 365*60*60*24) 
+                               / (30*60*60*24));  
+						$dias = floor(($diff - $años * 365*60*60*24 -  
+					             $meses*30*60*60*24)/ (60*60*24));
+						if($años>0){
+							printf("%d años, %d meses, %d dias, ", $años, $meses, $dias);
+						}elseif($meses>0){
+							printf("%d meses, %d dias, ", $meses, $dias);
+						}else{
+							printf(" %d dias ", $dias);
+						
+						}
+					 ?></td>
 					<td>
 						<?php if(in_array("EDITAR", $permisosActuales)){ ?>
 							<i class="fas fa-edit"  data-toggle="modal" data-target="#modal" onclick="editarUsuario(<?php echo $usuario['id']; ?>)"></i>
@@ -79,3 +96,4 @@
 		$("#modalContenido").load("vistas/usuarios/formularios/form1.php",{id:id});
 	}
 </script>
+
