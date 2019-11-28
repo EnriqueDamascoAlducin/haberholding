@@ -37,7 +37,7 @@
 					<td><?php echo $usuario['nombre_depto']; ?></td>
 					<td><?php echo $usuario['nombre_puesto']; ?></td>
 					<td><?php 
-						$date1 = strtotime($usuario['ingreso_usu']);  // convierte a segundos
+ 						$date1 = strtotime($usuario['ingreso_usu']);  // convierte a segundos
 						$date2 = strtotime(date("d-m-Y H:i:00",time())); // convierte a segundos
 						$diff = abs($date2 - $date1);  
 						$años = floor($diff / (365*60*60*24));  //redonde a un numero entetero mas bajo 4.3 años lo redonde a 4
