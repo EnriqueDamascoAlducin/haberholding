@@ -62,6 +62,17 @@
 <script src="dist/js/adminlte.min.js"></script>
 <script src="dist/js/sweetalert.min.js"></script>
 <script type="text/javascript">
+  <?php if(isset($_GET['out'])){ ?>
+    swal({
+      title: "Error",
+      text: "Se ha terminado la sesión",
+      icon: "error",
+      button: "Iniciar Sesión",
+    });
+    setTimeout(function(){
+      $(".swal-button").trigger("click");
+    },1500);
+  <?php } ?>
   $("#formularioLogin").submit(function(event){
     var valorempleado    = $("#noempleado").val().trim();
     var valorcontrasena  = $("#contrasena").val().trim();

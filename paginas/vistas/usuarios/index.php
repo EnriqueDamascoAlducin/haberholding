@@ -46,9 +46,19 @@
 						$dias = floor(($diff - $años * 365*60*60*24 -  
 					             $meses*30*60*60*24)/ (60*60*24));
 						if($años>0){
-							printf("%d años, %d meses, %d dias, ", $años, $meses, $dias);
+							if($años==1){
+								if($meses>1){
+									printf("%d año, %d meses, %d dias ", $años, $meses, $dias);
+								}elseif($meses==1){
+									printf("%d año, %d mes, %d dias ", $años, $meses, $dias);
+								}else{
+									printf("%d año,  %d dias ", $años, $dias);
+								}
+							}else{
+								printf("%d años, %d meses, %d dias ", $años, $meses, $dias);
+							}
 						}elseif($meses>0){
-							printf("%d meses, %d dias, ", $meses, $dias);
+							printf("%d meses, %d dias ", $meses, $dias);
 						}else{
 							printf(" %d dias ", $dias);
 						
