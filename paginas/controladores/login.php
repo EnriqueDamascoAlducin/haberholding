@@ -22,8 +22,7 @@
 			$_SESSION['extension_usu'] = $usu['extension_usu'];
 			$_SESSION['contrasena_usu'] = $usu['contrasena_usu'];
 			$_SESSION['ingreso_usu'] = $usu['ingreso_usu'];
-
-
+			/*Limite de tiempo 60 segundos x 15 que son los minutos que durara la sessión*/
 			$_SESSION['max-tiempo']=60*15;
 			$_SESSION[ 'ULTIMA_ACTIVIDAD' ] = time();
 		}

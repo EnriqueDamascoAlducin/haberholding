@@ -14,7 +14,7 @@
 	<?php if(!isset($_POST['id'])){ ?>
 		<input type="hidden" name="opc" id="opc" value="agregar">
 	<?php }else{ ?>
-		<input type="hidden" name="opc" id="opc" value="actualizar">
+		<input type="hidden" name="opc" id="opc" value="editar">
 		<input type="hidden" name="id" id="id" value="<?php echo $_POST['id'] ?>">
 	<?php } ?>
 	<div class="row">
@@ -51,8 +51,18 @@
 				<label for="sexo" class="form-label"><span style="color:red">*</span>Sexo</label>
 				<select id="sexo" name="sexo" class="form-control">
 					<option value="">Selecciona un Sexo</option>
-					<option value="1">Hombre</option>
-					<option value="2">Mujer</option>
+					<?php 
+						$sel1 =""; $sel2 ="";
+						if(isset($usuario['noempleado_usu'])){
+						 if($usuario['sexo_usu']==1){
+						 	$sel1 = "selected";	
+						 }elseif($usuario['sexo_usu']==2){
+						 	$sel2 = "selected";	
+						 }
+						} 
+					?>
+					<option value="1" <?php echo $sel1; ?>>Hombre</option>
+					<option value="2" <?php echo $sel2; ?>>Mujer</option>
 				</select>
 				<small id="small_sexo"></small>
 			</div>
@@ -60,14 +70,14 @@
 		<div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
 			<div class="form-group">
 				<label for="correo" class="form-label"><span style="color:red">*</span>Correo</label>
-				<input type="email" name="correo" id="correo" class="form-control" placeholder="ejemplo@ejemplo.com">
+				<input type="email" name="correo" id="correo" class="form-control" placeholder="ejemplo@ejemplo.com" value="<?php if(isset($usuario['correo_usu'])){echo $usuario['correo_usu']; } ?>">
 				<small id="small_correo"></small>
 			</div>
 		</div>
 		<div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
 			<div class="form-group">
 				<label for="extension" class="form-label">Extensión</label>
-				<input type="number" name="extension" id="extension" class="form-control" placeholder="Extensión">
+				<input type="number" name="extension" id="extension" class="form-control" placeholder="Extensión" value="<?php if(isset($usuario['extension_usu'])){echo $usuario['extension_usu']; } ?>">
 				<small id="small_extension"></small>
 			</div>
 		</div>
@@ -77,7 +87,12 @@
 				<select id="departamento" name="departamento" class="form-control" onchange="cargarPuestos()">
 					<option value="">Selecciona un Departamento</option>
 					<?php while ($departamento = $departamentos->fetch_assoc()){ ?>
-						<option value="<?php echo $departamento['value']; ?>"><?php echo $departamento['text']; ?></option>
+						<?php 
+						$sel ="";
+						if(isset($usuario['depto_usu']) && $usuario['depto_usu'] == $departamento['value'] ){
+							$sel ="selected";
+						} ?>
+						<option value="<?php echo $departamento['value']; ?>" <?php echo $sel; ?> ><?php echo $departamento['text']; ?></option>
 					<?php } ?>
 				</select>
 				<small id="small_departamento"></small>
@@ -95,7 +110,7 @@
 		<div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
 			<div class="form-group">
 				<label for="ingreso" class="form-label"><span style="color:red">*</span>Fecha de Ingreso</label>
-				<input type="date" name="ingreso" id="ingreso" class="form-control" placeholder="Fecha de Ingreso">
+				<input type="date" name="ingreso" id="ingreso" class="form-control" placeholder="Fecha de Ingreso"value="<?php if(isset($usuario['ingreso_usu'])){echo $usuario['ingreso_usu']; } ?>">
 				<small id="small_ingreso"></small>
 			</div>
 		</div>
@@ -124,13 +139,18 @@
 </form>
 <script type="text/javascript">
 	$("#sexo").on("change",function(){
-		if(this.value==1)
+		mostrarImagen();
+	});
+	function mostrarImagen(){
+		valor = $("#sexo").val();
+
+		if(valor==1)
 			$("#imgIcon").attr("src","../dist/img/userM.jpg");
-		else if(this.value==2)
+		else if(valor==2)
 			$("#imgIcon").attr("src","../dist/img/userW.jpg");
 		else			
 			$("#imgIcon").attr("src","../dist/img/noimage.jpg");
-	});
+	}
 	function cargarPuestos(){
 		depto= $("#departamento").val();
 		url="controladores/usuarios/controlador.php";
@@ -144,6 +164,13 @@
 			type:"POST",
 			success:function(puestos){
 				$("#puesto").html(puestos);
+				<?php
+					if(isset($usuario['puesto_usu'])){
+				?>		puesto = "<?php echo $usuario['puesto_usu'] ?>";
+						$("#option_"+puesto).prop("selected","selected");
+				<?php
+					}
+				?>
 			},
 			error:function(stat,text,text2){
 				alert(text2);
@@ -179,8 +206,8 @@
 				    });
 				    setTimeout(function(){
 				      $(".swal-button").trigger("click");
+				    	recargarPagina();
 				    },1500);
-
 				}
 			},
 			error:function(stat,text,text2){
@@ -188,4 +215,10 @@
 			}
 		});
 	}
+	<?php if(isset($usuario)){ ?>
+		$(document).ready(function(){
+			cargarPuestos();
+			mostrarImagen();
+		});
+	<?php } ?>
 </script>

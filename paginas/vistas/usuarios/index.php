@@ -71,6 +71,9 @@
 						<?php if(in_array("EQUIPOS", $permisosActuales)){ ?>
 							<i class="fas fa-desktop"></i>
 						<?php } ?>
+						<?php if(in_array("ELIMINAR", $permisosActuales)){ ?>
+							<i class="fas fa-trash" onclick="eliminarUsuario(<?php echo $usuario['id']; ?>,'<?php echo $usuario["nombre"] ?>')"></i>
+						<?php } ?>
 					</td>
 				</tr>
 			<?php } ?>
@@ -91,7 +94,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary" onclick="enviarForm();">Enviar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="enviarForm();">Enviar</button>
       </div>
     </div>
   </div>
@@ -104,6 +107,54 @@
 	function editarUsuario(id){
 		$("#modaltitulo").html("Editar Usuario");
 		$("#modalContenido").load("vistas/usuarios/formularios/form1.php",{id:id});
+	}
+
+	function eliminarUsuario(idusu,nombreusu){
+		datos={
+			opc:"eliminar",
+			usuario:idusu
+		};
+		url="controladores/usuarios/controlador.php";
+		$.ajax({
+			data:datos,
+			url:url,
+			type:'POST',
+			beforeSend:function(){
+				swal({
+			      title: "Eliminando",
+			      text: "Eliminando "+ nombreusu,
+			      icon: "success",
+			    });
+				$("body").prop("disabled","disabled");
+			},
+			success:function(respuesta){
+				$("body").prop("disabled",false);
+				$(".swal-button").trigger("click");
+				if(respuesta == "Error"){
+					swal({
+				      title: respuesta,
+				      text:  nombreusu + " no se pudo eliminar " ,
+				      icon: "error",
+			    	});
+				}else{
+					swal({
+				      title: "Eliminado",
+				      text:  nombreusu + " fue Eliminado " + respuesta,
+				      icon: "success",
+				    });
+				}
+				
+				recargarPagina();
+				$(".swal-button").trigger("click");
+			},
+			error:function(text,codigo,otro){
+				console.error(codigo);
+			}
+		});
+	}
+	function recargarPagina(){
+		$(".modal").modal("hide");
+		cargarVista("<?php echo $rutaModulo ?>","<?php echo $nombreModulo ?>",<?php echo $idModulo ?>);
 	}
 </script>
 
