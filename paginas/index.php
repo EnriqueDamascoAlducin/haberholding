@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="../dist/css/adminlte.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <link href="../dist/css/bootstrap4-toggle.min.css" rel="stylesheet">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -100,6 +101,22 @@
     <!-- Contenido -->
     <section class="content" id="contenidoPrincipal">
       
+<div class="container pt-3">
+  <div class="row">
+    <h2>Simple Collapsible</h2>
+    <p>Modulo.</p>
+    <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#demo">Simple collapsible</button>
+    <div id="demo" class="collapse">
+      <div class="row">
+        <div class="form-group">
+          <label for="ejemplo">Permiso1</label>
+          <input type="checkbox" checked data-toggle="toggle" data-size="lg" id="ejemplo">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
     </section>
     <!-- /.Contenido -->
   </div>
@@ -128,6 +145,7 @@
 <!-- AdminLTE for demo purposes -->
 <script src="../dist/js/demo.js"></script>
 <script src="../dist/js/sweetalert.min.js"></script>
+<script src="../dist/js/bootstrap4-toggle.min.js"></script>
 <script type="text/javascript">
   function cargarVista(ruta,nombre,id) {
     parametros ={
@@ -135,7 +153,20 @@
       ruta:ruta,
       id:id
     }
-    $("#contenidoPrincipal").load("vistas"+ruta+"/index.php",parametros);
+    $.ajax({
+      url: 'vistas'+ruta+"/index.php",
+      data:parametros,
+      type:'POST',
+      beforeSend:function(){
+        $("#contenidoPrincipal").html("<h1>Cargando Contenido</h1>");
+      },
+      success:function(respuesta){
+        $("#contenidoPrincipal").html(respuesta);
+      },
+      error:function(codigo,teextstatus,otro){
+        $("#contenidoPrincipal").html("<h1 style='color:red'> Error "+teextstatus+"</h1>");
+      }
+    });
   }
 
 </script>

@@ -72,7 +72,10 @@
 							<i class="fas fa-desktop"></i>
 						<?php } ?>
 						<?php if(in_array("ELIMINAR", $permisosActuales)){ ?>
-							<i class="fas fa-trash" onclick="eliminarUsuario(<?php echo $usuario['id']; ?>,'<?php echo $usuario["nombre"] ?>')"></i>
+							<i class="fa fa-trash" onclick="eliminarUsuario(<?php echo $usuario['id']; ?>,'<?php echo $usuario["nombre"] ?>')"></i>
+						<?php } ?>
+						<?php if(in_array("PERMISOS", $permisosActuales)){ ?>
+							<i class="fa fa-cog" onclick="asignarPermiso(<?php echo $usuario['id']; ?>,'<?php echo $usuario["nombre"] ?>')"></i>
 						<?php } ?>
 					</td>
 				</tr>
@@ -99,10 +102,14 @@
     </div>
   </div>
 </div>
+
 <script type="text/javascript">
 	function agregarUsuario(){
 		$("#modaltitulo").html("Agregar Usuario");
 		$("#modalContenido").load("vistas/usuarios/formularios/form1.php");
+	}
+	function asignarPermiso(usuario,nombre){
+		$("#contenidoPrincipal").load("vistas/usuarios/formularios/permisos.php",{usuario:usuario,nombre:nombre});
 	}
 	function editarUsuario(id){
 		$("#modaltitulo").html("Editar Usuario");
