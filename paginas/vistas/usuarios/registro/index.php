@@ -3,17 +3,18 @@
 	// Zona horaria
 		date_default_timezone_set('America/Mexico_City');
 	//
-	include_once '../../controladores/finsession.php';
-	include_once '../../controladores/conexion.php';
+	include_once '../../../controladores/finsession.php';
+	include_once '../../../controladores/conexion.php';
 	$nombreModulo = $_POST['nombre'];
 	$rutaModulo = $_POST['ruta'];
-	$idModulo = $_POST['id'];
+	$idsubmodulo = $_POST['id'];
 	$usuario = $_SESSION['usuario'];
 	$usuarios = $con->query("Select id_usu as id, CONCAT(IFNULL(nombre_usu,''),' ',IFNULL(apellidop_usu,''), ' ',IFNULL(apellidom_usu,'')) as nombre, nombre_depto, nombre_puesto,ingreso_usu,noempleado_usu as noempleado FROM usuarios u Inner join departamentos on u.depto_usu = id_depto INNER JOIN puestos on u.puesto_usu = id_puesto WHERE status_usu<>0");
-	$permisosXUsuarioLoggeado = $con->query("Select nombre_permiso from permisos_modulos pm INNER JOIN permisos_usuarios pu on pu.permiso_pu = pm.id_permiso where pu.status_pu <>0 and pm.status_permiso<>0 and modulo_permiso=".$idModulo. " and usuario_pu = " . $usuario);
+	$permisosXUsuarioLoggeado = $con->query("Select ps.nombre from submodulos sub INNER JOIN permisos_submodulos ps ON ps.idsubmodulo = sub.id INNER JOIN permisos_submodulos_usuarios psu on psu.idpermiso = ps.id where psu.status <>0 and sub.status<>0 and sub.id=". $idsubmodulo." and idusuario = " . $usuario);
+	
 	$permisosActuales = array();
 	while ($permiso = $permisosXUsuarioLoggeado->fetch_assoc()) {
-		$permisosActuales[] = $permiso['nombre_permiso'];
+		$permisosActuales[] = $permiso['nombre'];
 	}
 	include_once 'header.php';
 ?>
@@ -106,14 +107,14 @@
 <script type="text/javascript">
 	function agregarUsuario(){
 		$("#modaltitulo").html("Agregar Usuario");
-		$("#modalContenido").load("vistas/usuarios/formularios/form1.php");
+		$("#modalContenido").load("vistas/<?php echo $rutaModulo; ?>/formularios/form1.php");
 	}
 	function asignarPermiso(usuario,nombre){
-		$("#contenidoPrincipal").load("vistas/usuarios/formularios/permisos.php",{usuario:usuario,nombre:nombre});
+		$("#contenidoPrincipal").load("vistas/<?php echo $rutaModulo; ?>/formularios/permisos.php",{usuario:usuario,nombre:nombre});
 	}
 	function editarUsuario(id){
 		$("#modaltitulo").html("Editar Usuario");
-		$("#modalContenido").load("vistas/usuarios/formularios/form1.php",{id:id});
+		$("#modalContenido").load("vistas/<?php echo $rutaModulo; ?>/formularios/form1.php",{id:id});
 	}
 
 	function eliminarUsuario(idusu,nombreusu){
@@ -161,7 +162,7 @@
 	}
 	function recargarPagina(){
 		$(".modal").modal("hide");
-		cargarVista("<?php echo $rutaModulo ?>","<?php echo $nombreModulo ?>",<?php echo $idModulo ?>);
+		cargarVista("<?php echo $rutaModulo ?>","<?php echo $nombreModulo ?>",<?php echo $idsubmodulo ?>);
 	}
 </script>
 

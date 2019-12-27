@@ -2,28 +2,30 @@
 include_once '../conexion.php';
 include_once '../finsession.php';
 
-$query = "UPDATE permisos_usuarios set status_pu = 0 where usuario_pu = ".$_POST['usuario'] ." AND permiso_pu in(Select id_permiso from permisos_modulos WHERE modulo_permiso=".$_POST['modulo'].")" ;
-
+$query = "UPDATE permisos_submodulos_usuarios set status = 0 where idusuario = ".$_POST['usuario'] ." AND idpermiso in(Select id from permisos_submodulos WHERE idsubmodulo=".$_POST['submodulo'].")" ;
 $eliminarPermisos = $con->query($query);
-$queryPermisosExistentes = "SELECT COUNT(id_pu) as total FROM permisos_usuarios where usuario_pu= " .$_POST['usuario']. " AND permiso_pu = ?";
+$queryPermisosExistentes = "SELECT COUNT(id) as total FROM permisos_submodulos_usuarios where idusuario= " .$_POST['usuario']. " AND idpermiso = ? ";
 $preparePermisosExistentes = $con->prepare($queryPermisosExistentes);
 foreach ($_POST as $campo => $valor) {
-	if($campo!="usuario" && $campo!="modulo"){
+	if($campo!="usuario" && $campo!="submodulo"){
 		foreach ($valor as $val) {
-			echo $val;
 			$preparePermisosExistentes->bind_param('i',$val);
 			$preparePermisosExistentes->execute();
 			$respuesta = $preparePermisosExistentes->get_result();
 			foreach ($respuesta as $resp) {
 				if( $resp['total'] > 0 ) {
-					$query = "UPDATE permisos_usuarios set status_pu = 1 WHERE usuario_pu= ".$_POST['usuario'] . " AND permiso_pu = ".$val;
+					$query = "UPDATE permisos_submodulos_usuarios set status = 1 WHERE idusuario= ".$_POST['usuario'] . " AND idpermiso = ".$val;
 				}else{
-					$query = "INSERT INTO permisos_usuarios(usuario_pu,permiso_pu) VALUES (".$_POST['usuario'].",".$val.")";
+					$query = "INSERT INTO permisos_submodulos_usuarios(idusuario,idpermiso) VALUES (".$_POST['usuario'].",".$val.")";
 				}
 			}
-			echo $con->query($query);
+			$res = $con->query($query);
+			if($res==0){
+				echo "Fallo al registrar los permisos";
+				die();
+			}
 		}
 	}
 }
-
+echo "Permisos Registrados";
 ?>

@@ -2,8 +2,15 @@
 <?php include_once 'controladores/conexion.php'; ?>
 
 <?php
-  $query = "select DISTINCT(id_modulo), nombre_modulo,m.ruta_modulo,m.icono_modulo from permisos_usuarios pu INNER JOIN permisos_modulos pm ON pu.permiso_pu = pm.id_permiso INNER JOIN modulos m ON pm.modulo_permiso=m.id_modulo where usuario_pu =". $_SESSION['usuario']." AND pu.status_pu<>0 and m.status_modulo<>0 and pm.status_permiso<>0";
+  $query = "SELECT (id_modulo), nombre_modulo, ruta_modulo, icono_modulo FROM modulos WHERE status_modulo <> 0 ";
   $modulos = $con->query($query);
+
+  $querySubmodulos = "SELECT DISTINCT(sub.id), sub.nombre,sub.icono, sub.ruta FROM submodulos sub INNER JOIN permisos_submodulos ps ON sub.id = ps.idsubmodulo INNER JOIN permisos_submodulos_usuarios psu ON ps.id = psu.idpermiso WHERE psu.status<>0 AND sub.status<>0 AND  psu.idusuario = " . $_SESSION['usuario'] . " AND sub.modulo = ?";
+  $PrepareSubmodulos = $con->prepare($querySubmodulos); 
+
+
+  $queryCountSubmodulos = "SELECT COUNT(ps.id) as total FROM submodulos sub INNER JOIN permisos_submodulos ps ON sub.id = ps.idsubmodulo INNER JOIN permisos_submodulos_usuarios psu ON ps.id = psu.idpermiso WHERE psu.status<>0 AND sub.status<>0 AND  psu.idusuario = " . $_SESSION['usuario'] . " AND sub.modulo = ?";
+  $PrepareCountSubmodulos = $con->prepare($queryCountSubmodulos);
 
 ?>
 <!DOCTYPE html>
@@ -78,14 +85,38 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Modulos con permisos -->
           <?php while ($modulo = $modulos->fetch_assoc()) { ?>
-            <li class="nav-item has-treeview">
-              <a onclick="cargarVista('<?php echo $modulo['ruta_modulo']; ?>','<?php echo $modulo['nombre_modulo']; ?>','<?php echo $modulo['id_modulo']; ?>')" class="nav-link">
-                <i class="nav-icon <?php echo $modulo['icono_modulo']; ?>"></i>
-                <p>
-                  <i class="right fas fa-angle-left"></i><?php echo $modulo['nombre_modulo'] ?>
-                </p>
-              </a>
-            </li>
+            <?php 
+              $permisoSubmodulos = 0;
+              $PrepareCountSubmodulos->bind_param('i',$modulo['id_modulo']);
+              $PrepareCountSubmodulos->execute();
+              $cantSubmodulos = $PrepareCountSubmodulos->get_result();
+              foreach ($cantSubmodulos as $cantSubmodulo) {
+                $permisoSubmodulos = ($cantSubmodulo['total']);
+              }
+              if($permisoSubmodulos>0){
+                $PrepareSubmodulos->bind_param('i',$modulo['id_modulo']);
+                $PrepareSubmodulos->execute();
+                $submodulos = $PrepareSubmodulos->get_result(); 
+            ?>
+              <li class="nav-item has-treeview">
+                <a  class="nav-link">
+                  <i class="nav-icon <?php echo $modulo['icono_modulo']; ?>"></i>
+                  <p>
+                    <i class="right fas fa-angle-left"></i><?php echo $modulo['nombre_modulo'] ?>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <?php foreach ($submodulos as $submodulo) { ?>
+                    <li class="nav-item">
+                      <a onclick="cargarVista('<?php echo $modulo['ruta_modulo'].$submodulo['ruta']; ?>','<?php echo $submodulo['nombre']; ?>','<?php echo $submodulo['id']; ?>')" class="nav-link">
+                        <i class="<?php echo $submodulo['icono'] ?> nav-icon"></i>
+                        <p><?php echo $submodulo['nombre'] ?></p>
+                      </a>
+                    </li>
+                  <?php } ?>
+                </ul>
+              </li>
+            <?php } ?>
           <?php } ?>
         </ul>
       </nav>
@@ -100,22 +131,6 @@
 
     <!-- Contenido -->
     <section class="content" id="contenidoPrincipal">
-      
-<div class="container pt-3">
-  <div class="row">
-    <h2>Simple Collapsible</h2>
-    <p>Modulo.</p>
-    <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#demo">Simple collapsible</button>
-    <div id="demo" class="collapse">
-      <div class="row">
-        <div class="form-group">
-          <label for="ejemplo">Permiso1</label>
-          <input type="checkbox" checked data-toggle="toggle" data-size="lg" id="ejemplo">
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
     </section>
     <!-- /.Contenido -->
@@ -154,7 +169,7 @@
       id:id
     }
     $.ajax({
-      url: 'vistas'+ruta+"/index.php",
+      url: 'vistas'+ruta+"index.php",
       data:parametros,
       type:'POST',
       beforeSend:function(){

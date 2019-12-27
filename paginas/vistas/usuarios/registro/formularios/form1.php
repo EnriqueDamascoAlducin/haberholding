@@ -1,7 +1,7 @@
 <?php
 
-	include_once '../../../controladores/finsession.php';
-	include_once '../../../controladores/conexion.php';
+	include_once '../../../../controladores/finsession.php';
+	include_once '../../../../controladores/conexion.php';
 	if(isset($_POST['id'])){
 		$usuario = $con->query("Select * from usuarios where id_usu=".$_POST['id'])->fetch_assoc();
 	}
