@@ -70,7 +70,7 @@
 							<i class="fas fa-edit"  data-toggle="modal" data-target="#modal" onclick="editarUsuario(<?php echo $usuario['id']; ?>)"></i>
 						<?php } ?>
 						<?php if(in_array("EQUIPOS", $permisosActuales)){ ?>
-							<i class="fas fa-desktop"></i>
+							<i class="fas fa-desktop" data-toggle="modal" data-target="#modal" onclick="asignarEquipos(<?php echo $usuario['id']; ?>,'<?php echo $usuario["nombre"] ?>')"></i>
 						<?php } ?>
 						<?php if(in_array("ELIMINAR", $permisosActuales)){ ?>
 							<i class="fa fa-trash" onclick="eliminarUsuario(<?php echo $usuario['id']; ?>,'<?php echo $usuario["nombre"] ?>')"></i>
@@ -98,7 +98,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="enviarForm();">Enviar</button>
+        <button type="button" class="btn btn-primary"  onclick="enviarForm();">Enviar</button>
       </div>
     </div>
   </div>
@@ -112,6 +112,9 @@
 	function asignarPermiso(usuario,nombre){
 		$("#contenidoPrincipal").load("vistas/<?php echo $rutaModulo; ?>/formularios/permisos.php",{usuario:usuario,nombre:nombre});
 	}
+	function asignarEquipos(id,nombre){
+		$("#modaltitulo").html("Asignar Equipo");
+		$("#modalContenido").load("vistas/<?php echo $rutaModulo; ?>/formularios/equipos.php",{id:id});	}
 	function editarUsuario(id){
 		$("#modaltitulo").html("Editar Usuario");
 		$("#modalContenido").load("vistas/<?php echo $rutaModulo; ?>/formularios/form1.php",{id:id});
