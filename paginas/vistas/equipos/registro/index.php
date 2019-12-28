@@ -9,7 +9,7 @@
 	$rutaModulo = $_POST['ruta'];
 	$idsubmodulo = $_POST['id'];
 	$usuario = $_SESSION['usuario'];
-	$equipos = $con->query("SELECT e.id as id ,clas.nombre as clasificacion,e.serie, modelos.nombre as mod_nombre ,marcas.nombre as mar_nombre, fecha_max_garantia as garantia FROM equipos e INNER JOIN marcas ON marcas.id = e.id_marca INNER JOIN modelos ON modelos.id = e.id_modelo INNER JOIN clasificaciones clas on e.clasificacion = clas.id WHERE e.status<>0 ORDER BY e.serie asc, e.id  ");
+	$equipos = $con->query("SELECT e.status, e.id as id ,clas.nombre as clasificacion,e.serie, modelos.nombre as mod_nombre ,marcas.nombre as mar_nombre, fecha_max_garantia as garantia FROM equipos e INNER JOIN marcas ON marcas.id = e.id_marca INNER JOIN modelos ON modelos.id = e.id_modelo INNER JOIN clasificaciones clas on e.clasificacion = clas.id WHERE e.status<>0 ORDER BY e.serie asc, e.id  ");
 
 	$permisosXUsuarioLoggeado = $con->query("Select ps.nombre from submodulos sub INNER JOIN permisos_submodulos ps ON ps.idsubmodulo = sub.id INNER JOIN permisos_submodulos_usuarios psu on psu.idpermiso = ps.id where psu.status <>0 and sub.status<>0 and sub.id=". $idsubmodulo." and idusuario = " . $usuario);
 	
@@ -27,6 +27,7 @@
 				<th>Serie</th>
 				<th>Modelo</th>
 				<th>Marca</th>
+				<th>Estatus</th>
 				<th>Acciones</th>
 			</tr>
 		</thead>
@@ -37,19 +38,38 @@
 					<td><?php echo $equipo['serie']; ?></td>
 					<td><?php echo $equipo['mod_nombre']; ?></td>
 					<td><?php echo $equipo['mar_nombre']; ?></td>
+					<td>
+						<?php 
+							if($equipo['status']==1){
+								echo "Sin Asignar";
+							}elseif($equipo['status']==2){
+								echo "Asignado";
+							}elseif($equipo['status']==3){
+								echo "En reparación";
+							}elseif($equipo['status']==4){
+								echo "En Garantía";
+							}elseif($equipo['status']==5){
+								echo "Deshabilitado";
+							}
+						?>
+							
+					</td>
 					
 					<td>
 						<?php if(in_array("EDITAR", $permisosActuales)){ ?>
 							<i class="fas fa-edit"  data-toggle="modal" data-target="#modal" onclick="editar(<?php echo $equipo['id']; ?>)"></i>
 						<?php } ?>
 						<?php if(in_array("ELIMINAR", $permisosActuales)){ ?>
-							<i class="fa fa-trash" onclick="eliminar(<?php echo $equipo['id']; ?>,'<?php echo $equipo["serie"] ?>')"></i>
+							<i class="fa fa-trash" data-toggle="modal" data-target="#modal" onclick="opcionesEliminar(<?php echo $equipo['id']; ?>,'<?php echo $equipo["serie"] ?>')"></i>
 						<?php } ?>
 						<?php if(in_array("COMPONENTES", $permisosActuales)){ ?>
 							<i class="fas fa-print" data-toggle="modal" data-target="#modal" onclick="componentes(<?php echo $equipo['id']; ?>)" ></i>
 						<?php } ?>
 						<?php if(in_array("SOFTWARE", $permisosActuales)){ ?>
 							<i class="fas fa-code" data-toggle="modal" data-target="#modal" onclick="software(<?php echo $equipo['id']; ?>)" ></i>
+						<?php } ?>
+						<?php if(in_array("BITACORA", $permisosActuales)){ ?>
+							<i class="fas fa-book-open" data-toggle="modal" data-target="#modal" onclick="bitacora(<?php echo $equipo['id']; ?>)" ></i>
 						<?php } ?>
 					</td>
 				</tr>
@@ -94,11 +114,21 @@
 		$("#modaltitulo").html("Añadir Software");
 		$("#modalContenido").load("vistas/<?php echo $rutaModulo; ?>/formularios/software.php",{id:id});
 	}
+	function bitacora(id){
+		$("#modaltitulo").html("Bitácora ");
+		$("#modalContenido").load("vistas/<?php echo $rutaModulo; ?>/formularios/bitacora.php",{id:id});
+	}
+	function opcionesEliminar(id,nombre){
 
-	function eliminar(id,nombre){
+		$("#modaltitulo").html("Eliminar " + nombre);
+		$("#modalContenido").load("vistas/<?php echo $rutaModulo; ?>/formularios/opcionesEliminar.php",{id:id,nombre:nombre});
+	}
+	function eliminar(id,nombre,status){
 		datos={
 			opc:"eliminar",
-			id:id
+			id:id,
+			status:status,
+			nombre:nombre
 		};
 		url="controladores/equipos/controlador.php";
 		$.ajax({
@@ -114,6 +144,7 @@
 				$("body").prop("disabled","disabled");
 			},
 			success:function(respuesta){
+					$(".modal").modal("hide");
 				$("body").prop("disabled",false);
 				$(".swal-button").trigger("click");
 				if(respuesta == "Error"){
@@ -129,9 +160,10 @@
 				      icon: "success",
 				    });
 				}
-				
-				recargarPagina();
-				$(".swal-button").trigger("click");
+			    setTimeout(function(){
+			     // $(".swal-button").trigger("click");
+			    	recargarPagina();
+			    },1500);
 			},
 			error:function(text,codigo,otro){
 				console.error(codigo);
@@ -142,5 +174,3 @@
 		cargarVista("<?php echo $rutaModulo ?>","<?php echo $nombreModulo ?>",<?php echo $idsubmodulo ?>);
 	}
 </script>
-
-

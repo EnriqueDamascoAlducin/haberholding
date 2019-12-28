@@ -18,7 +18,7 @@
 	}
 	include_once 'header.php';
 ?>
-<div id="tabla" >
+<div id="tabla" class="table-responsive-sm">
 	<table class="table DataTable">
 		<thead>
 			<tr>

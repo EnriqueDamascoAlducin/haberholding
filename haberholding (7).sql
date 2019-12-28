@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-12-2019 a las 21:44:50
+-- Tiempo de generación: 28-12-2019 a las 07:13:32
 -- Versión del servidor: 10.4.8-MariaDB
 -- Versión de PHP: 7.3.11
 
@@ -30,14 +30,31 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `bitacora_movimientos_equipo` (
   `id` int(11) NOT NULL,
-  `movimiento` varchar(25) COLLATE utf8_spanish_ci NOT NULL,
+  `movimiento` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
   `id_equipo` int(11) NOT NULL,
-  `comentario` varchar(65) COLLATE utf8_spanish_ci NOT NULL,
-  `registro` date NOT NULL,
-  `estatus` tinyint(4) NOT NULL,
   `id_usu` int(11) NOT NULL,
-  `id_movimiento` int(11) NOT NULL
+  `comentario` varchar(65) COLLATE utf8_spanish_ci NOT NULL,
+  `registro` datetime NOT NULL DEFAULT current_timestamp(),
+  `status` tinyint(4) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `bitacora_movimientos_equipo`
+--
+
+INSERT INTO `bitacora_movimientos_equipo` (`id`, `movimiento`, `id_equipo`, `id_usu`, `comentario`, `registro`, `status`) VALUES
+(1, 'Desasignar Equipo', 3, 1, '1 desasigno el equipo a Enrique Damasco(1)', '2019-12-27 23:10:03', 1),
+(2, 'Desasignar Equipo', 1, 1, '1 desasigno el equipo a Carolina Velez(2)', '2019-12-27 23:11:09', 1),
+(3, 'Asignar Equipo', 1, 1, 'No. Empleado(1) asigno el equipo a Enrique Damasco(1)', '2019-12-27 23:14:13', 1),
+(4, 'Añadir Componentes', 4, 1, 'No. Empleado(1) le añadio el compone dsadsa', '2019-12-27 23:19:57', 1),
+(5, 'Quitar Componentes', 8, 1, 'No. Empleado(1) le retiro el compone dsadsa', '2019-12-27 23:24:14', 1),
+(6, 'Quitar Componentes', 4, 1, 'No. Empleado(1) le retiro el compone M-1525', '2019-12-27 23:24:56', 1),
+(7, 'Añadir Software', 4, 1, 'No. Empleado(1) le añadio el software Windows 7', '2019-12-27 23:29:18', 1),
+(8, 'Quitar Componentes', 4, 1, 'No. Empleado(1) le retiro el compone Windows 7', '2019-12-27 23:29:39', 1),
+(9, 'Envio a Reparación', 4, 1, 'No. Empleado(1) Envió a Reparación el Equipo FT150', '2019-12-27 23:50:49', 1),
+(10, 'Envio a Garantía', 4, 1, 'No. Empleado(1) Envió a Garantía el Equipo FT150', '2019-12-27 23:51:04', 1),
+(11, 'Elimino Equipo', 4, 1, 'No. Empleado(1) Elimino el Equipo FT150', '2019-12-27 23:51:18', 1),
+(12, 'Envio a Reparación', 2, 1, 'No. Empleado(1) Envió a Reparación el Equipo dsadsa', '2019-12-28 00:11:26', 1);
 
 -- --------------------------------------------------------
 
@@ -93,7 +110,8 @@ CREATE TABLE `componentes` (
 INSERT INTO `componentes` (`id`, `nombre`, `id_clasificacion`, `descripcion`, `fecha_max_garantia`, `id_marca`, `id_modelo`, `registro`, `status`) VALUES
 (1, 'fz1550', 5, 'Mouse Inalambrico color negro', '2019-12-12', 1, 7, '0000-00-00 00:00:00', 1),
 (2, 'dsadsa', 6, 'jajaajaj', '2019-12-06', 2, 6, '2019-12-27 11:00:56', 0),
-(3, 'dsadsa', 8, 'dsadsa', '2019-12-21', 2, 6, '2019-12-27 14:44:29', 1);
+(3, 'dsadsa', 8, 'dsadsa', '2019-12-21', 2, 6, '2019-12-27 14:44:29', 1),
+(4, 'M-1525', 5, 'Mouse Negro Inalambrico', NULL, 2, 6, '2019-12-27 22:14:30', 1);
 
 -- --------------------------------------------------------
 
@@ -147,9 +165,10 @@ CREATE TABLE `equipos` (
 --
 
 INSERT INTO `equipos` (`id`, `serie`, `clasificacion`, `id_modelo`, `id_marca`, `fecha_max_garantia`, `comentarios`, `registro`, `status`) VALUES
-(1, '0078', 8, 7, 1, '2019-12-27', 'core i 7  funcionando bien', '2019-12-27 12:43:07', 1),
-(2, 'dsadsa', 8, 4, 1, NULL, 'dsadsa', '2019-12-27 13:03:04', 0),
-(3, 'dsa', 5, 6, 2, NULL, 'dsadsa', '2019-12-27 13:04:31', 0);
+(1, '0078', 8, 7, 1, '2019-12-27', 'core i 7  funcionando bien', '2019-12-27 12:43:07', 0),
+(2, 'dsadsa', 8, 4, 1, NULL, 'dsadsa', '2019-12-27 13:03:04', 3),
+(3, 'dsa', 5, 6, 2, NULL, 'dsadsa', '2019-12-27 13:04:31', 0),
+(4, 'FT150', 9, 4, 1, NULL, 'Procesaro intel core i9 8va generación\r\nram de 4gb', '2019-12-27 22:13:52', 1);
 
 -- --------------------------------------------------------
 
@@ -174,7 +193,9 @@ INSERT INTO `equipos_componente` (`id`, `id_equipo`, `id_componente`, `registro`
 (3, 1, 1, '2019-12-27 20:26:49', 1),
 (4, 3, 1, '2019-12-27 20:27:06', 1),
 (5, 1, 1, '2019-12-27 20:33:43', 0),
-(6, 1, 3, '2019-12-27 20:44:35', 0);
+(6, 1, 3, '2019-12-27 20:44:35', 0),
+(7, 4, 4, '2019-12-28 04:15:22', 0),
+(8, 4, 3, '2019-12-28 05:19:57', 0);
 
 -- --------------------------------------------------------
 
@@ -196,7 +217,10 @@ CREATE TABLE `equipos_software` (
 
 INSERT INTO `equipos_software` (`id`, `id_equipo`, `id_componente`, `registro`, `status`) VALUES
 (9, 1, 1, '2019-12-27 20:35:00', 1),
-(16, 1, 3, '2019-12-27 20:42:05', 1);
+(16, 1, 3, '2019-12-27 20:42:05', 1),
+(18, 4, 3, '2019-12-28 04:15:33', 1),
+(19, 4, 1, '2019-12-28 05:26:39', 1),
+(20, 4, 1, '2019-12-28 05:29:18', 0);
 
 -- --------------------------------------------------------
 
@@ -313,7 +337,8 @@ INSERT INTO `permisos_submodulos` (`id`, `nombre`, `idsubmodulo`, `registro`, `s
 (27, 'EDITAR', 12, '2019-12-27 13:10:29', 1),
 (28, 'ELIMINAR', 12, '2019-12-27 13:10:29', 1),
 (29, 'COMPONENTES', 3, '2019-12-27 13:56:08', 1),
-(30, 'SOFTWARE', 3, '2019-12-27 13:56:08', 1);
+(30, 'SOFTWARE', 3, '2019-12-27 13:56:08', 1),
+(31, 'BITACORA', 3, '2019-12-28 00:01:03', 1);
 
 -- --------------------------------------------------------
 
@@ -360,7 +385,8 @@ INSERT INTO `permisos_submodulos_usuarios` (`id`, `idusuario`, `idpermiso`, `reg
 (33, 1, 27, '2019-12-27 13:11:31', 1),
 (34, 1, 28, '2019-12-27 13:11:31', 1),
 (35, 1, 29, '2019-12-27 13:56:18', 1),
-(36, 1, 30, '2019-12-27 13:56:18', 1);
+(36, 1, 30, '2019-12-27 13:56:18', 1),
+(37, 1, 31, '2019-12-28 00:01:56', 1);
 
 -- --------------------------------------------------------
 
@@ -485,9 +511,26 @@ CREATE TABLE `usuarios_equipo` (
   `id` int(11) NOT NULL,
   `id_usuario` int(11) NOT NULL,
   `id_equipo` int(11) NOT NULL,
-  `registro` date NOT NULL,
-  `usuario` varchar(50) COLLATE utf8_spanish_ci NOT NULL
+  `registro` datetime NOT NULL DEFAULT current_timestamp(),
+  `status` tinyint(4) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+
+--
+-- Volcado de datos para la tabla `usuarios_equipo`
+--
+
+INSERT INTO `usuarios_equipo` (`id`, `id_usuario`, `id_equipo`, `registro`, `status`) VALUES
+(3, 2, 4, '0000-00-00 00:00:00', 0),
+(4, 2, 1, '2019-12-27 22:37:31', 0),
+(5, 1, 1, '2019-12-27 22:41:08', 0),
+(6, 1, 1, '2019-12-27 22:41:51', 0),
+(7, 2, 4, '2019-12-27 22:41:56', 0),
+(8, 1, 1, '2019-12-27 22:42:13', 0),
+(9, 1, 4, '2019-12-27 22:48:50', 0),
+(10, 1, 4, '2019-12-27 23:08:23', 0),
+(11, 2, 1, '2019-12-27 23:08:47', 0),
+(12, 1, 3, '2019-12-27 23:09:41', 0),
+(13, 1, 1, '2019-12-27 23:14:13', 1);
 
 --
 -- Índices para tablas volcadas
@@ -615,6 +658,12 @@ ALTER TABLE `usuarios_equipo`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `bitacora_movimientos_equipo`
+--
+ALTER TABLE `bitacora_movimientos_equipo`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
 -- AUTO_INCREMENT de la tabla `clasificaciones`
 --
 ALTER TABLE `clasificaciones`
@@ -624,7 +673,7 @@ ALTER TABLE `clasificaciones`
 -- AUTO_INCREMENT de la tabla `componentes`
 --
 ALTER TABLE `componentes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `departamentos`
@@ -636,19 +685,19 @@ ALTER TABLE `departamentos`
 -- AUTO_INCREMENT de la tabla `equipos`
 --
 ALTER TABLE `equipos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `equipos_componente`
 --
 ALTER TABLE `equipos_componente`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `equipos_software`
 --
 ALTER TABLE `equipos_software`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `marcas`
@@ -672,13 +721,13 @@ ALTER TABLE `modulos`
 -- AUTO_INCREMENT de la tabla `permisos_submodulos`
 --
 ALTER TABLE `permisos_submodulos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `permisos_submodulos_usuarios`
 --
 ALTER TABLE `permisos_submodulos_usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT de la tabla `puestos`
@@ -703,6 +752,12 @@ ALTER TABLE `submodulos`
 --
 ALTER TABLE `usuarios`
   MODIFY `id_usu` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Id empleado', AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios_equipo`
+--
+ALTER TABLE `usuarios_equipo`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Restricciones para tablas volcadas

@@ -200,7 +200,7 @@
 					console.log(errores);
 				    swal({
 				      title: "Registro Agregado",
-				      text: "errores",
+				      text: "...",
 				      icon: "success",
 				      button: "Iniciar Sesión",
 				    });

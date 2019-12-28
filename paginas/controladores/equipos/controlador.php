@@ -52,10 +52,22 @@ include_once '../finsession.php';
 		echo json_encode($errores);
 	}elseif(isset($_POST['opc']) && $_POST['opc']=="eliminar"){
 		$id = $_POST['id'];
-		$query = "UPDATE equipos set status = 0 where id =".$id;
+		$status = $_POST['status'];
+		$query = "UPDATE equipos set status = ".$status." where id =".$id;
 		$eliminar = $con->query($query);
 		if($eliminar>0){
 			echo " Correctamente";
+			///Registrar en BITACORA
+			$Nomequipo=$_POST['nombre'];
+			if($status == 0){
+				$valores = "'Elimino Equipo',".$id.",".$_SESSION['usuario'].", 'No. Empleado(". $_SESSION['noempleado_usu'] .") Elimino el Equipo ".$Nomequipo."'";
+			}elseif($status == 4){
+				$valores = "'Envio a Garantía',".$id.",".$_SESSION['usuario'].", 'No. Empleado(". $_SESSION['noempleado_usu'] .") Envió a Garantía el Equipo ".$Nomequipo."'";
+			}elseif($status == 3){
+				$valores = "'Envio a Reparación',".$id.",".$_SESSION['usuario'].", 'No. Empleado(". $_SESSION['noempleado_usu'] .") Envió a Reparación el Equipo ".$Nomequipo."'";
+			}
+			$insertarBitacora = "INSERT INTO bitacora_movimientos_equipo (movimiento,id_equipo,id_usu,comentario) VALUES ($valores)";
+			$con->query($insertarBitacora);
 		}else{
 			echo "Error";
 		}
