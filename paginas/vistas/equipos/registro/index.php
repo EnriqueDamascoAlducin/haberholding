@@ -1,4 +1,4 @@
-<?php  
+<?php
 
 	// Zona horaria
 		date_default_timezone_set('America/Mexico_City');
@@ -9,10 +9,10 @@
 	$rutaModulo = $_POST['ruta'];
 	$idsubmodulo = $_POST['id'];
 	$usuario = $_SESSION['usuario'];
-	$equipos = $con->query("SELECT e.status, e.id as id ,clas.nombre as clasificacion,e.serie, modelos.nombre as mod_nombre ,marcas.nombre as mar_nombre, fecha_max_garantia as garantia FROM equipos e INNER JOIN marcas ON marcas.id = e.id_marca INNER JOIN modelos ON modelos.id = e.id_modelo INNER JOIN clasificaciones clas on e.clasificacion = clas.id WHERE e.status<>0 ORDER BY e.serie asc, e.id  ");
+	$_SESSION['idsubmodulo'] = $idsubmodulo;
 
 	$permisosXUsuarioLoggeado = $con->query("Select ps.nombre from submodulos sub INNER JOIN permisos_submodulos ps ON ps.idsubmodulo = sub.id INNER JOIN permisos_submodulos_usuarios psu on psu.idpermiso = ps.id where psu.status <>0 and sub.status<>0 and sub.id=". $idsubmodulo." and idusuario = " . $usuario);
-	
+
 	$permisosActuales = array();
 	while ($permiso = $permisosXUsuarioLoggeado->fetch_assoc()) {
 		$permisosActuales[] = $permiso['nombre'];
@@ -20,62 +20,7 @@
 	include_once 'header.php';
 ?>
 <div id="tabla" >
-	<table class="table DataTable">
-		<thead>
-			<tr>
-				<th>Nombre</th>
-				<th>Serie</th>
-				<th>Modelo</th>
-				<th>Marca</th>
-				<th>Estatus</th>
-				<th>Acciones</th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php while ($equipo = $equipos->fetch_assoc()) { ?>
-				<tr>
-					<td><?php echo $equipo['clasificacion']; ?></td>
-					<td><?php echo $equipo['serie']; ?></td>
-					<td><?php echo $equipo['mod_nombre']; ?></td>
-					<td><?php echo $equipo['mar_nombre']; ?></td>
-					<td>
-						<?php 
-							if($equipo['status']==1){
-								echo "Sin Asignar";
-							}elseif($equipo['status']==2){
-								echo "Asignado";
-							}elseif($equipo['status']==3){
-								echo "En reparación";
-							}elseif($equipo['status']==4){
-								echo "En Garantía";
-							}elseif($equipo['status']==5){
-								echo "Deshabilitado";
-							}
-						?>
-							
-					</td>
-					
-					<td>
-						<?php if(in_array("EDITAR", $permisosActuales)){ ?>
-							<i class="fas fa-edit"  data-toggle="modal" data-target="#modal" onclick="editar(<?php echo $equipo['id']; ?>)"></i>
-						<?php } ?>
-						<?php if(in_array("ELIMINAR", $permisosActuales)){ ?>
-							<i class="fa fa-trash" data-toggle="modal" data-target="#modal" onclick="opcionesEliminar(<?php echo $equipo['id']; ?>,'<?php echo $equipo["serie"] ?>')"></i>
-						<?php } ?>
-						<?php if(in_array("COMPONENTES", $permisosActuales)){ ?>
-							<i class="fas fa-print" data-toggle="modal" data-target="#modal" onclick="componentes(<?php echo $equipo['id']; ?>)" ></i>
-						<?php } ?>
-						<?php if(in_array("SOFTWARE", $permisosActuales)){ ?>
-							<i class="fas fa-code" data-toggle="modal" data-target="#modal" onclick="software(<?php echo $equipo['id']; ?>)" ></i>
-						<?php } ?>
-						<?php if(in_array("BITACORA", $permisosActuales)){ ?>
-							<i class="fas fa-book-open" data-toggle="modal" data-target="#modal" onclick="bitacora(<?php echo $equipo['id']; ?>)" ></i>
-						<?php } ?>
-					</td>
-				</tr>
-			<?php } ?>
-		</tbody>
-	</table>
+
 </div>
 <!-- Modal -->
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
@@ -173,4 +118,28 @@
 	function recargarPagina(){
 		cargarVista("<?php echo $rutaModulo ?>","<?php echo $nombreModulo ?>",<?php echo $idsubmodulo ?>);
 	}
+	function cargarTabla() {
+		let depto = $("#filtro_deptos").val();
+		let marca = $("#filtro_marca").val();
+		let modelos = $("#filtro_modelos").val();
+		let garantia = $("#filtro_garantia").val();
+		$("#tabla").load("vistas/<?php echo $rutaModulo ?>/tabla.php",{depto:depto,marca:marca,modelos:modelos,garantia:garantia});
+	}
+	cargarTabla();
+	$("#report-excel").on("click",function(){
+		let depto = $("#filtro_deptos").val();
+		let marca = $("#filtro_marca").val();
+		let modelos = $("#filtro_modelos").val();
+		let garantia = $("#filtro_garantia").val();
+		window.open("vistas/equipos/registro/excel/general-report.php?depto="+depto+"&marca="+marca+"&modelo"+modelos+"&garantia="+garantia, '_blank');
+	});
+
+	$("#report-pdf").on("click",function(){
+		let depto = $("#filtro_deptos").val();
+		let marca = $("#filtro_marca").val();
+		let modelos = $("#filtro_modelos").val();
+		let garantia = $("#filtro_garantia").val();
+		window.open("vistas/equipos/registro/pdfs/general-report.php?depto="+depto+"&marca="+marca+"&modelo"+modelos+"&garantia="+garantia , '_blank');
+	});
+
 </script>

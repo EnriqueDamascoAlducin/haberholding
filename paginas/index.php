@@ -6,9 +6,7 @@
   $modulos = $con->query($query);
 
   $querySubmodulos = "SELECT DISTINCT(sub.id), sub.nombre,sub.icono, sub.ruta FROM submodulos sub INNER JOIN permisos_submodulos ps ON sub.id = ps.idsubmodulo INNER JOIN permisos_submodulos_usuarios psu ON ps.id = psu.idpermiso WHERE psu.status<>0 AND sub.status<>0 AND  psu.idusuario = " . $_SESSION['usuario'] . " AND sub.modulo = ?";
-  $PrepareSubmodulos = $con->prepare($querySubmodulos); 
-
-
+  $PrepareSubmodulos = $con->prepare($querySubmodulos);
   $queryCountSubmodulos = "SELECT COUNT(ps.id) as total FROM submodulos sub INNER JOIN permisos_submodulos ps ON sub.id = ps.idsubmodulo INNER JOIN permisos_submodulos_usuarios psu ON ps.id = psu.idpermiso WHERE psu.status<>0 AND sub.status<>0 AND  psu.idusuario = " . $_SESSION['usuario'] . " AND sub.modulo = ?";
   $PrepareCountSubmodulos = $con->prepare($queryCountSubmodulos);
 
@@ -31,6 +29,7 @@
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   <link href="../dist/css/bootstrap4-toggle.min.css" rel="stylesheet">
+  <base href="/haberholding/paginas/" target="_blank">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -85,7 +84,7 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Modulos con permisos -->
           <?php while ($modulo = $modulos->fetch_assoc()) { ?>
-            <?php 
+            <?php
               $permisoSubmodulos = 0;
               $PrepareCountSubmodulos->bind_param('i',$modulo['id_modulo']);
               $PrepareCountSubmodulos->execute();
@@ -96,7 +95,7 @@
               if($permisoSubmodulos>0){
                 $PrepareSubmodulos->bind_param('i',$modulo['id_modulo']);
                 $PrepareSubmodulos->execute();
-                $submodulos = $PrepareSubmodulos->get_result(); 
+                $submodulos = $PrepareSubmodulos->get_result();
             ?>
               <li class="nav-item has-treeview">
                 <a  class="nav-link">
@@ -138,7 +137,7 @@
   <!-- /.content-wrapper -->
   <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
-      
+
     </div>
     <strong>Copyright &copy;  Haber Holding.</strong> Derechos Reservados
   </footer>
