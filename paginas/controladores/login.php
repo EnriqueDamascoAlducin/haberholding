@@ -1,4 +1,5 @@
 <?php
+
 	include_once 'conexion.php';
 	$noEmpleado = $_POST['empleado'];
 	$contrasena = $_POST['contrasena'];

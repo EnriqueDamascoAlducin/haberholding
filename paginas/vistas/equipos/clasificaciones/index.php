@@ -69,13 +69,13 @@
 	function agregar(){
 
 		$("#enviarForm").html("Enviar").removeClass('btn-success').addClass('btn-primary');
-		$("#modaltitulo").html("Registrar Departamento");
+		$("#modaltitulo").html("Registrar Clasificación");
 		$("#modalContenido").load("vistas/<?php echo $rutaModulo; ?>/formularios/form1.php");
 	}
 	function editar(id){
 
 		$("#enviarForm").html("Enviar").removeClass('btn-success').addClass('btn-primary');
-		$("#modaltitulo").html("Editar Departamento");
+		$("#modaltitulo").html("Editar Clasificación");
 		$("#modalContenido").load("vistas/<?php echo $rutaModulo; ?>/formularios/form1.php",{id:id});
 	}
 
