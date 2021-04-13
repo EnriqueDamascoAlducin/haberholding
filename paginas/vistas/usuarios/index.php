@@ -9,7 +9,7 @@
 	$rutaModulo = $_POST['ruta'];
 	$idModulo = $_POST['id'];
 	$usuario = $_SESSION['usuario'];
-	$usuarios = $con->query("Select id_usu as id, CONCAT(IFNULL(nombre_usu,''),' ',IFNULL(apellidop_usu,''), ' ',IFNULL(apellidom_usu,'')) as nombre, nombre_depto, nombre_puesto,ingreso_usu,noempleado_usu as noempleado FROM usuarios u Inner join departamentos on u.depto_usu = id_depto INNER JOIN puestos on u.puesto_usu = id_puesto WHERE status_usu<>0");
+	$usuarios = $con->query("Select id_usu as id, CONCAT(IFNULL(nombre_usu,''),' ',IFNULL(apellidop_usu,''), ' ',IFNULL(apellidom_usu,'')) as nombre, nombre_depto, nombre_puesto,ingreso_usu,noempleado_usu as noempleado FROM usuarios u Inner join departamentos on u.depto_usu = id_depto INNER JOIN puestos on u.puesto_usu = id_puesto WHERE tipo_usuario='interno' AND status_usu<>0");
 	$permisosXUsuarioLoggeado = $con->query("Select nombre_permiso from permisos_modulos pm INNER JOIN permisos_usuarios pu on pu.permiso_pu = pm.id_permiso where pu.status_pu <>0 and pm.status_permiso<>0 and modulo_permiso=".$idModulo. " and usuario_pu = " . $usuario);
 	$permisosActuales = array();
 	while ($permiso = $permisosXUsuarioLoggeado->fetch_assoc()) {

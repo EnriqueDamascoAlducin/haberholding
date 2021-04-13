@@ -38,7 +38,7 @@ include_once '../finsession.php';
 
 
 			$valores = $nombre.",".$apellidop.",".$apellidom.",".$sexo.",".$correo.",".$noEmpleado.",".$departamento.",".$puesto.",".$extension.",".$contrasena.",".$ingreso;
-			$query = "INSERT INTO usuarios (nombre_usu,apellidop_usu,apellidom_usu,sexo_usu,correo_usu,noempleado_usu,depto_usu,puesto_usu,extension_usu,contrasena_usu,ingreso_usu) VALUES (".$valores.")";
+			$query = "INSERT INTO usuarios (nombre_usu,apellidop_usu,apellidom_usu,sexo_usu,correo_usu,noempleado_usu,depto_usu,puesto_usu,extension_usu,contrasena_usu,ingreso_usu,tipo_usuario) VALUES (".$valores.",'interno')";
 			$errores['success'][]= $con->query($query);
 			$errores['success'][]=$query;
 			
