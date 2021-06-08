@@ -26,18 +26,15 @@ include_once '../finsession.php';
 			}else{
 				$extension = "'".$_POST['extension']."'"; 
 			}
-			$noEmpleado = trim($_POST['noempleado']);
+			$noEmpleado = "'".trim($_POST['noempleado'])."'";
 			$nombre = "'".trim($_POST['nombre'])."'";
 			$apellidop = "'".trim($_POST['apellidop'])."'";
 			$sexo = trim($_POST['sexo']);
 			$correo = "'".trim($_POST['correo'])."'";
-			$departamento = trim($_POST['departamento']);
-			$puesto = trim($_POST['puesto']);
-			$ingreso = "'".trim($_POST['ingreso'])."'";
 			$contrasena = "'".md5($_POST['contrasena'])."'";
 
-			$valores = $nombre.",".$apellidop.",".$apellidom.",".$sexo.",".$correo.",".$noEmpleado.",".$departamento.",".$puesto.",".$extension.",".$contrasena.",".$ingreso;
-			$query = "INSERT INTO usuarios (nombre_usu,apellidop_usu,apellidom_usu,sexo_usu,correo_usu,noempleado_usu,depto_usu,puesto_usu,extension_usu,contrasena_usu,ingreso_usu,tipo_usuario) VALUES (".$valores.",'externo')";
+			$valores = $nombre.",".$apellidop.",".$apellidom.",".$sexo.",".$correo.",".$noEmpleado.",".$extension.",".$contrasena;
+			$query = "INSERT INTO usuarios (nombre_usu,apellidop_usu,apellidom_usu,sexo_usu,correo_usu,noempleado_usu,extension_usu,contrasena_usu,tipo_usuario) VALUES (".$valores.",'externo')";
 			$errores['success'][]= $con->query($query);
 			$errores['success'][]=$query;
 			
@@ -145,15 +142,6 @@ include_once '../finsession.php';
 		}
 		if(!isset($_POST['correo']) || empty(trim($_POST['correo'])) || !filter_var($_POST['correo'],FILTER_VALIDATE_EMAIL)){
 			$errores['campos'][] = "correo";
-		}
-		if(!isset($_POST['departamento']) || empty($_POST['departamento'])){
-			$errores['campos'][] = "departamento";
-		}
-		if(!isset($_POST['puesto']) || empty($_POST['puesto'])){
-			$errores['campos'][] = "puesto";
-		}
-		if(!isset($_POST['ingreso']) || empty($_POST['ingreso'])){
-			$errores['campos'][] = "ingreso";
 		}
 		return $errores;
 	}

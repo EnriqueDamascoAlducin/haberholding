@@ -3,14 +3,19 @@
 	include_once 'conexion.php';
 	$noEmpleado = $_POST['empleado'];
 	$contrasena = $_POST['contrasena'];
-	$usuario = $con->query("Select * from usuarios where noempleado_usu =" . $noEmpleado. " AND contrasena_usu ='".md5($contrasena)."' AND status_usu<>0");
+  $query = "Select * from usuarios where noempleado_usu =" . $noEmpleado. " AND contrasena_usu ='".md5($contrasena)."' AND status_usu<>0 ";
+  if(isset($_POST['tipo_usuario']))
+    $query .= ' AND tipo_usuario = "'. $_POST['tipo_usuario'] . '"';
+  else  
+  $query .= ' AND tipo_usuario = "interno"';
+	$usuario = $con->query($query);
 	if($usuario->num_rows>0){
 		while ($usu = $usuario->fetch_assoc()){
 			echo "Bienvenido ". $usu['nombre_usu'];
 			/*
 				Variables de Sessión con datos del usuario loggeado
 			*/
-			session_start();
+      @session_start();
 			$_SESSION['usuario'] = $usu['id_usu'];
 			$_SESSION['nombre_usu'] = $usu['nombre_usu'];
 			$_SESSION['apellidop_usu'] = $usu['apellidop_usu'];
@@ -23,9 +28,11 @@
 			$_SESSION['extension_usu'] = $usu['extension_usu'];
 			$_SESSION['contrasena_usu'] = $usu['contrasena_usu'];
 			$_SESSION['ingreso_usu'] = $usu['ingreso_usu'];
+			$_SESSION['tipo_usuario'] = $usu['tipo_usuario'];
 			/*Limite de tiempo 60 segundos x 15 que son los minutos que durara la sessión*/
 			$_SESSION['max-tiempo']=60*15;
 			$_SESSION[ 'ULTIMA_ACTIVIDAD' ] = time();
+      break;
 		}
 	}else{
 		echo "Error";

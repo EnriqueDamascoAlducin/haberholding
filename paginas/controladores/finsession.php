@@ -6,7 +6,11 @@
 
 ?>
 	<script type="text/javascript">
-		location.replace("/haberholding/?out");
+  		<?php if($_SESSION['tipo_usuario'] == 'externo'){ ?>
+			location.replace("/haberholding/clientes.php");
+		<?php }else{ ?>
+			location.replace("/haberholding/?out");
+		<?php } ?>
 	</script>
 <?php
 	exit();

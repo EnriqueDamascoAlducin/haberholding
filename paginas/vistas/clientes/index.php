@@ -118,6 +118,7 @@
 		$.ajax({
 			data:datos,
 			url:url,
+      showLoader : true,
 			type:'POST',
 			beforeSend:function(){
 				swal({
@@ -128,6 +129,7 @@
 				$("body").prop("disabled","disabled");
 			},
 			success:function(respuesta){
+        $("div.modal-backdrop").remove(); 
 				$("body").prop("disabled",false);
 				$(".swal-button").trigger("click");
 				if(respuesta == "Error"){
@@ -146,6 +148,8 @@
 				
 				recargarPagina();
 				$(".swal-button").trigger("click");
+        
+        
 			},
 			error:function(text,codigo,otro){
 				console.error(codigo);
@@ -155,6 +159,7 @@
 	function recargarPagina(){
 		$(".modal").modal("hide");
 		cargarVista("<?php echo $rutaModulo ?>","<?php echo $nombreModulo ?>",<?php echo $idModulo ?>);
+    $("div.modal-backdrop").remove();
 	}
 </script>
 

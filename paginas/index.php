@@ -29,6 +29,8 @@
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   <link href="../dist/css/bootstrap4-toggle.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+  
   <base href="/haberholding/paginas/" target="_blank">
 </head>
 <body class="hold-transition sidebar-mini">
@@ -44,7 +46,12 @@
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <li class="nav-item dropdown">
-        <a class="nav-link" href="../">
+      
+  		<?php if($_SESSION['tipo_usuario'] == 'externo'){ ?>
+        <a class="nav-link" target="_PARENT" href="../clientes.php">
+      <?php }else{ ?>
+        <a class="nav-link" target="_PARENT" href="../">
+      <?php } ?>
           <i class="fas fa-sign-out-alt"></i>Salir
         </a>
       </li>
@@ -160,6 +167,8 @@
 <script src="../dist/js/demo.js"></script>
 <script src="../dist/js/sweetalert.min.js"></script>
 <script src="../dist/js/bootstrap4-toggle.min.js"></script>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
 <script type="text/javascript">
   function cargarVista(ruta,nombre,id) {
     parametros ={
@@ -172,7 +181,7 @@
       data:parametros,
       type:'POST',
       beforeSend:function(){
-        $("#contenidoPrincipal").html("<h1>Cargando Contenido</h1>");
+        $("#contenidoPrincipal").html("<h1 class='text-center'>Cargando Contenido</h1>");
       },
       success:function(respuesta){
         $("#contenidoPrincipal").html(respuesta);

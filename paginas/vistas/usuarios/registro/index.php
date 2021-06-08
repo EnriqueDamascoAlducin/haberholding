@@ -105,6 +105,9 @@
 </div>
 
 <script type="text/javascript">
+$(document).ready(function(){
+  $(".DataTable").DataTable();
+})
 	function agregarUsuario(){
 		$("#modaltitulo").html("Agregar Usuario");
 		$("#modalContenido").load("vistas/<?php echo $rutaModulo; ?>/formularios/form1.php");

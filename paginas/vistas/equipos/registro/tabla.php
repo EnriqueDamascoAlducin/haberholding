@@ -86,3 +86,8 @@
     <?php } ?>
   </tbody>
 </table>
+<script>
+$(document).ready( function () {
+    $('.DataTable').DataTable();
+} );
+</script>

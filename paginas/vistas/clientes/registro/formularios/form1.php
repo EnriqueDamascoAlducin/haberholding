@@ -20,8 +20,8 @@
 	<div class="row">
 		<div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
 			<div class="form-group">
-				<label for="noempleado" class="form-label"><span style="color:red">*</span> No Empleado</label>
-				<input type="number" name="noempleado" id="noempleado" class="form-control" value="<?php if(isset($usuario['noempleado_usu'])){echo $usuario['noempleado_usu']; } ?>" placeholder="No. Empleado">
+				<label for="noempleado" class="form-label"><span style="color:red">*</span> Cliente Id</label>
+				<input type="text" name="noempleado" id="noempleado" class="form-control" value="<?php if(isset($usuario['noempleado_usu'])){echo $usuario['noempleado_usu']; } ?>" placeholder="Cliente Id">
 				<small id="small_noempleado"></small>
 			</div>
 		</div>
@@ -82,39 +82,6 @@
 			</div>
 		</div>
 		<div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
-			<div class="form-group required">
-				<label for="departamento" class="form-label"><span style="color:red">*</span>Departamento</label>
-				<select id="departamento" name="departamento" class="form-control" onchange="cargarPuestos()">
-					<option value="">Selecciona un Departamento</option>
-					<?php while ($departamento = $departamentos->fetch_assoc()){ ?>
-						<?php 
-						$sel ="";
-						if(isset($usuario['depto_usu']) && $usuario['depto_usu'] == $departamento['value'] ){
-							$sel ="selected";
-						} ?>
-						<option value="<?php echo $departamento['value']; ?>" <?php echo $sel; ?> ><?php echo $departamento['text']; ?></option>
-					<?php } ?>
-				</select>
-				<small id="small_departamento"></small>
-			</div>
-		</div>
-		<div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
-			<div class="form-group">
-				<label for="puesto" class="form-label"><span style="color:red">*</span>Puesto</label>
-				<select id="puesto" name="puesto" class="form-control">
-					<option value="">Selecciona un Puesto</option>
-				</select>
-				<small id="small_puesto"></small>
-			</div>
-		</div>
-		<div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
-			<div class="form-group">
-				<label for="ingreso" class="form-label"><span style="color:red">*</span>Fecha de Ingreso</label>
-				<input type="date" name="ingreso" id="ingreso" class="form-control" placeholder="Fecha de Ingreso"value="<?php if(isset($usuario['ingreso_usu'])){echo $usuario['ingreso_usu']; } ?>">
-				<small id="small_ingreso"></small>
-			</div>
-		</div>
-		<div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
 			<div class="form-group">
 				<label for="contrasena" class="form-label"><span style="color:red">*</span>Contraseña</label>
 				<input type="password" name="contrasena" id="contrasena" class="form-control" placeholder="Contraseña">
@@ -150,32 +117,6 @@
 			$("#imgIcon").attr("src","../dist/img/userW.jpg");
 		else			
 			$("#imgIcon").attr("src","../dist/img/noimage.jpg");
-	}
-	function cargarPuestos(){
-		depto= $("#departamento").val();
-		url="controladores/clientes/controlador.php";
-		datos={
-			depto:depto,
-			opc:'departamentos'
-		};
-		$.ajax({
-			url:url,
-			data:datos,
-			type:"POST",
-			success:function(puestos){
-				$("#puesto").html(puestos);
-				<?php
-					if(isset($usuario['puesto_usu'])){
-				?>		puesto = "<?php echo $usuario['puesto_usu'] ?>";
-						$("#option_"+puesto).prop("selected","selected");
-				<?php
-					}
-				?>
-			},
-			error:function(stat,text,text2){
-				alert(text2);
-			}
-		});
 	}
 	function enviarForm(){
 		datos = $("#formUsuario").serialize();

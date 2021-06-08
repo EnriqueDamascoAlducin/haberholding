@@ -9,7 +9,7 @@
 	$rutaModulo = $_POST['ruta'];
 	$idsubmodulo = $_POST['id'];
 	$usuario = $_SESSION['usuario'];
-	$usuarios = $con->query("Select id_usu as id, CONCAT(IFNULL(nombre_usu,''),' ',IFNULL(apellidop_usu,''), ' ',IFNULL(apellidom_usu,'')) as nombre, nombre_depto, nombre_puesto,ingreso_usu,noempleado_usu as noempleado FROM usuarios u Inner join departamentos on u.depto_usu = id_depto INNER JOIN puestos on u.puesto_usu = id_puesto WHERE tipo_usuario='externo' AND status_usu<>0");
+	$usuarios = $con->query("Select id_usu as id, CONCAT(IFNULL(nombre_usu,''),' ',IFNULL(apellidop_usu,''), ' ',IFNULL(apellidom_usu,'')) as nombre, ingreso_usu,noempleado_usu as noempleado FROM usuarios u  WHERE tipo_usuario='externo' AND status_usu<>0");
 	$permisosXUsuarioLoggeado = $con->query("Select ps.nombre from submodulos sub INNER JOIN permisos_submodulos ps ON ps.idsubmodulo = sub.id INNER JOIN permisos_submodulos_usuarios psu on psu.idpermiso = ps.id where psu.status <>0 and sub.status<>0 and sub.id=". $idsubmodulo." and idusuario = " . $usuario);
 	
 	$permisosActuales = array();
@@ -24,8 +24,6 @@
 			<tr>
 				<th>No. Empleado</th>
 				<th>Nombre</th>
-				<th>Departamento</th>
-				<th>Puesto</th>
 				<th>Antigüedad</th>
 				<th>Acciones</th>
 			</tr>
@@ -35,8 +33,6 @@
 				<tr>
 					<td><?php echo $usuario['noempleado']; ?></td>
 					<td><?php echo $usuario['nombre']; ?></td>
-					<td><?php echo $usuario['nombre_depto']; ?></td>
-					<td><?php echo $usuario['nombre_puesto']; ?></td>
 					<td><?php 
  						$date1 = strtotime($usuario['ingreso_usu']);  // convierte a segundos
 						$date2 = strtotime(date("d-m-Y H:i:00",time())); // convierte a segundos
@@ -105,6 +101,9 @@
 </div>
 
 <script type="text/javascript">
+  $(document).ready(function(){
+    $(".DataTable").DataTable();
+  })
 	function agregarUsuario(){
 		$("#modaltitulo").html("Agregar Usuario");
 		$("#modalContenido").load("vistas/<?php echo $rutaModulo; ?>/formularios/form1.php");
