@@ -7,14 +7,13 @@
 	$equipoAsignado = array();
 	$equipos = $con->query("SELECT serie as text, id as value from equipos where status = 1 and id not in (Select id_equipo from usuarios_equipo Where status=1) ");
 
+	$equiposAsignado = $con->query("SELECT id_equipo FROM usuarios_equipo WHERE status =1  and id_usuario = $usuario");
 
-	$equipoAsignado = $con->query("SELECT count(id_equipo) as total,id_equipo FROM usuarios_equipo WHERE status =1  and id_usuario = $usuario")->fetch_assoc();
 
 ?>
 <div class="alert alert-warning" role="alert" style="display: none" id="alerta">
   
 </div>
-<?php if($equipoAsignado['total']==0){ ?>
 	<form id="FormComponentes" onsubmit="">
 		<input type="hidden" name="opc" id="opc" value="agregar">
 		<input type="hidden" name="id" id="id" value="<?php echo $_POST['id'] ?>">
@@ -34,13 +33,13 @@
 			</div>
 		</div>
 	</form>
-<?php } ?>
 <div class="table-responsive-sm" id="equipoInfo">
 </div>
 <script type="text/javascript">
 
-<?php if($equipoAsignado['total']>0){ ?>
-			getEquipoInfoAsginado(<?php echo $equipoAsignado['id_equipo'] ?>);
+
+<?php while ($equipoAsignado = $equiposAsignado->fetch_assoc()){ ?>
+	getEquipoInfoAsginado(<?php echo $equipoAsignado['id_equipo'] ?>);
 <?php } ?>
 	$("#equipo").on("change",function(){
 		if(this.value != ""){
