@@ -5,7 +5,7 @@
 	
 	$usuario = $_POST['id'];
 	$equipoAsignado = array();
-	$equipos = $con->query("SELECT serie as text, id as value from equipos where status = 1 ");
+	$equipos = $con->query("SELECT serie as text, id as value from equipos where status in (1,2)");
 
 
 	$equiposAsignado = $con->query("SELECT id_equipo FROM usuarios_equipo WHERE status =1  and id_usuario = $usuario");
