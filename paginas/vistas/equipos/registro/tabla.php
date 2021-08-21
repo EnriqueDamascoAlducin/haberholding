@@ -12,7 +12,7 @@
 	while ($permiso = $permisosXUsuarioLoggeado->fetch_assoc()) {
 		$permisosActuales[] = $permiso['nombre'];
 	}
-  $select = "SELECT e.status, e.id as id ,clas.nombre as clasificacion,e.serie, modelos.nombre as mod_nombre ,marcas.nombre as mar_nombre, fecha_max_garantia as garantia ";
+  $select = "SELECT e.status, e.id as id ,clas.nombre as clasificacion,e.serie, modelos.nombre as mod_nombre ,marcas.nombre as mar_nombre, fecha_max_garantia as garantia, DATE_ADD(fecha_max_garantia, INTERVAL 4 YEAR) AS garantia_limit ";
   $from = " FROM equipos e INNER JOIN marcas ON marcas.id = e.id_marca INNER JOIN modelos ON modelos.id = e.id_modelo INNER JOIN clasificaciones clas on e.clasificacion = clas.id ";
   $where = " WHERE e.status<>0 ";
   if(isset($_POST['depto']) && !empty($_POST['depto']) ){
@@ -39,6 +39,7 @@
       <th>Serie</th>
       <th>Modelo</th>
       <th>Marca</th>
+      <th>Garantia</th>
       <th>Estatus</th>
       <th>Acciones</th>
     </tr>
@@ -50,6 +51,7 @@
         <td><?php echo $equipo['serie']; ?></td>
         <td><?php echo $equipo['mod_nombre']; ?></td>
         <td><?php echo $equipo['mar_nombre']; ?></td>
+        <td><?=  $equipo['garantia']  .'  /  '. $equipo['garantia_limit']; ?></td>
         <td>
           <?php
             if($equipo['status']==1){

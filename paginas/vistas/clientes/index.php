@@ -157,9 +157,8 @@
 		});
 	}
 	function recargarPagina(){
-		$(".modal").modal("hide");
-		cargarVista("<?php echo $rutaModulo ?>","<?php echo $nombreModulo ?>",<?php echo $idModulo ?>);
-    $("div.modal-backdrop").remove();
+		
+		cargarVista("<?php echo $rutaModulo ?>","<?php echo $nombreModulo ?>",<?php echo $idsubmodulo ?>);
 	}
 </script>
 

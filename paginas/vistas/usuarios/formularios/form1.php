@@ -197,7 +197,8 @@
 				}else if(errores['contrasena']){
 				    $("#alerta").html("Las contraseñas no Coinciden").show();
 				}else{
-					console.log(errores);
+					$(".modal").modal("hide");
+					(errores);
 				    swal({
 				      title: "Registro Agregado",
 				      text: "errores",
