@@ -24,14 +24,30 @@ include_once '../finsession.php';
 			$valores = "'Asignar Equipo',".$equipo.",".$_SESSION['usuario'].", 'No. Empleado(". $_SESSION['noempleado_usu'] .") asigno el equipo a ".$nombreUsr."'";
 			$insertarBitacora = "INSERT INTO bitacora_movimientos_equipo (movimiento,id_equipo,id_usu,comentario) VALUES ($valores)";
 			$con->query($insertarBitacora);
+
+			//guardar archivo
+			if(isset($_FILES['responsiva'])){
+				$path = $_FILES['responsiva']['name'];
+				$ext = pathinfo($path, PATHINFO_EXTENSION);
+				$equipo_id = trim($_POST['equipo']);
+				$usuario_id = trim($_POST['id']);
+				$dir =  $_SERVER['DOCUMENT_ROOT']."/haberholding/responsivas_clientes/";
+				if (!file_exists($dir)) {
+					mkdir($dir, 0777, true);
+				}
+				$dir_subida =$dir.$usuario_id."_".$equipo_id.".".$ext;
+				move_uploaded_file($_FILES['responsiva']['tmp_name'],$dir_subida);
+
+			}
 		}
 		echo json_encode($errores);
 	}elseif(isset($_POST['opc']) && $_POST['opc']=="eliminar"){
 		
 		$id = $_POST['id'];
+		$assignado_id = $_POST['assignado_id'];
 		$idusuario = $con->query("SELECT id_usuario FROM usuarios_equipo WHERE status = 1 AND id_equipo =".$id)->fetch_assoc(); 
 		$nombreUsr = getUsuarioInfo($idusuario['id_usuario']);
-		$query = "UPDATE usuarios_equipo set status = 0 where id_equipo =".$id;
+		$query = "UPDATE usuarios_equipo set status = 0 where id_equipo =".$id. " AND id = $assignado_id";
 		$eliminar = $con->query($query);
 		if($eliminar>0){
 			echo "Correctamente";
@@ -96,6 +112,7 @@ include_once '../finsession.php';
 	}elseif(isset($_POST['opc']) && $_POST['opc']=="infoequipoAsignado"){
 		
 		$equipo = $_POST['equipo'];
+		$assignado = $_POST['assignado'];
 		$query = "SELECT e.serie, e.comentarios, e.id as eid, mo.nombre as modelo, ma.nombre as marca, c.nombre as cnombre FROM equipos e INNER JOIN clasificaciones c ON c.id = e.clasificacion INNER JOIN marcas ma ON e.id_marca = ma.id INNER JOIN modelos mo ON e.id_modelo = mo.id WHERE e.id =".$equipo;
 		$equipoGral = $con->query($query)->fetch_assoc();
 
@@ -110,7 +127,7 @@ include_once '../finsession.php';
 			$respuesta .= "<thead>";
 				$respuesta .= "<tr>";
 					$respuesta .= "<th colspan='2' style='text-align:center'> <b>".$equipoGral['serie']."</b> (". $equipoGral['cnombre'].") -> ".$equipoGral['marca']. " - ".$equipoGral['modelo']  ."</th>";
-					$respuesta .= "<th><button class='btn btn-danger' onclick='desasignarEquipo(".$equipoGral['eid'].")' ><i class='fa fa-trash'></i></button></th>";
+					$respuesta .= "<th><button class='btn btn-danger' onclick='desasignarEquipo(".$equipoGral['eid'].",".$assignado.")' ><i class='fa fa-trash'></i></button></th>";
 				$respuesta .= "</tr>";
 				$respuesta .= "<tr>";
 					$respuesta .= "<th colspan='3' style='text-align:center'>".$equipoGral['comentarios']."</th>";

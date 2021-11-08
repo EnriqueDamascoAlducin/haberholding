@@ -7,14 +7,14 @@
 	$equipoAsignado = array();
 	$equipos = $con->query("SELECT serie as text, id as value from equipos where status in (1,2)  ");
 
-	$equiposAsignado = $con->query("SELECT id_equipo FROM usuarios_equipo WHERE status =1  and id_usuario = $usuario");
+	$equiposAsignado = $con->query("SELECT id_equipo,id FROM usuarios_equipo WHERE status =1  and id_usuario = $usuario");
 
 
 ?>
 <div class="alert alert-warning" role="alert" style="display: none" id="alerta">
   
 </div>
-	<form id="FormComponentes" onsubmit="">
+	<form id="FormComponentes" onsubmit=""  enctype="multipart/form-data">
 		<input type="hidden" name="opc" id="opc" value="agregar">
 		<input type="hidden" name="id" id="id" value="<?php echo $_POST['id'] ?>">
 		
@@ -32,14 +32,22 @@
 				</div>
 			</div>
 		</div>
+		<div class="row">
+			<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+				<div class="form-group required">
+					<label for="equipo" class="form-label">Responsiva</label>
+					<input type="file" class="form-control" accept="application/pdf" name="responsiva" id="responsiva">
+					<small id="small_responsiva"></small>
+				</div>
+			</div>
+		</div>
 	</form>
 <div class="table-responsive-sm" id="equipoInfo">
 </div>
 <script type="text/javascript">
 
-
 <?php while ($equipoAsignado = $equiposAsignado->fetch_assoc()){ ?>
-	getEquipoInfoAsginado(<?php echo $equipoAsignado['id_equipo'] ?>);
+	getEquipoInfoAsginado(<?php echo $equipoAsignado['id_equipo'] ?>,<?php echo $equipoAsignado['id'] ?>);
 <?php } ?>
 	$("#equipo").on("change",function(){
 		if(this.value != ""){
@@ -64,9 +72,9 @@
 			}
 		});
 	}
-	function getEquipoInfoAsginado(equipo){
+	function getEquipoInfoAsginado(equipo,assignado){
 		url="controladores/clientes/usuarios_equipos.php";
-		datos ={ opc:'infoequipoAsignado',equipo:equipo};
+		datos ={ opc:'infoequipoAsignado',equipo:equipo,assignado:assignado};
 		$.ajax({
 			url:url,
 			data:datos,
@@ -79,9 +87,9 @@
 			}
 		});
 	}
-	function desasignarEquipo(id){
+	function desasignarEquipo(id,assignado_id){
 		url="controladores/clientes/usuarios_equipos.php";
-		datos ={ opc:'eliminar',id:id};
+		datos ={ opc:'eliminar',id:id,assignado_id:assignado_id};
 		$.ajax({
 			url:url,
 			data:datos,
@@ -105,16 +113,19 @@
 		});
 	}	
 	function enviarForm(){
-		datos = $("#FormComponentes").serialize();
+		var formData = new FormData(document.getElementById("FormComponentes"));
 		url="controladores/clientes/usuarios_equipos.php";
 		$("#FormComponentes").children().find("small").removeAttr("style").html("");
 		$("#FormComponentes").children().find("input,select").removeAttr("style");
 		$("#alerta").html("").hide();
 		$.ajax({
 			url:url,
-			data:datos,
-			dataType:'json',
-			type:"POST",
+			type: "post",
+			dataType: "html",
+			data: formData,
+			cache: false,
+			contentType: false,
+			processData: false,
 			success:function(errores){
 				if(errores['campos']){
 					$.each(errores['campos'],function(indice,campo){

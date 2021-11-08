@@ -17,6 +17,21 @@
 		$permisosActuales[] = $permiso['nombre'];
 	}
 	include_once 'header.php';
+	function getResponsivasByUser($usuario_id){
+		$total = [];
+
+		$dir =  $_SERVER['DOCUMENT_ROOT']."/haberholding/responsivas_clientes/";
+		if(is_dir($dir)){
+			$files = scandir($dir);
+			foreach($files as $file){
+				if(strpos($file,$usuario_id."_") !== false){
+					$total[] = "/haberholding/responsivas_clientes/$file";
+				}
+			}
+		}
+
+		return $total;
+	}
 ?>
 <div id="tabla" class="table-responsive-sm">
 	<table class="table DataTable">
@@ -24,7 +39,7 @@
 			<tr>
 				<th>No. Empleado</th>
 				<th>Nombre</th>
-				<th>Antigüedad</th>
+				<th>Responsivas</th>
 				<th>Acciones</th>
 			</tr>
 		</thead>
@@ -33,34 +48,18 @@
 				<tr>
 					<td><?php echo $usuario['noempleado']; ?></td>
 					<td><?php echo $usuario['nombre']; ?></td>
-					<td><?php 
- 						$date1 = strtotime($usuario['ingreso_usu']);  // convierte a segundos
-						$date2 = strtotime(date("d-m-Y H:i:00",time())); // convierte a segundos
-						$diff = abs($date2 - $date1);  
-						$años = floor($diff / (365*60*60*24));  //redonde a un numero entetero mas bajo 4.3 años lo redonde a 4
-						$meses = floor(($diff - $años * 365*60*60*24) 
-                               / (30*60*60*24));  
-						$dias = floor(($diff - $años * 365*60*60*24 -  
-					             $meses*30*60*60*24)/ (60*60*24));
-						if($años>0){
-							if($años==1){
-								if($meses>1){
-									printf("%d año, %d meses, %d dias ", $años, $meses, $dias);
-								}elseif($meses==1){
-									printf("%d año, %d mes, %d dias ", $años, $meses, $dias);
-								}else{
-									printf("%d año,  %d dias ", $años, $dias);
-								}
+					<td>
+						<?php 
+							$responsivas = (getResponsivasByUser($usuario['id'])) ;
+							if(empty($responsivas)){
+								echo "Sin Responsivas";
 							}else{
-								printf("%d años, %d meses, %d dias ", $años, $meses, $dias);
+								foreach($responsivas as $key =>  $responsiva){
+									echo "<a href='".$responsiva."'>". ($key+1)."</a><br>";
+								}
 							}
-						}elseif($meses>0){
-							printf("%d meses, %d dias ", $meses, $dias);
-						}else{
-							printf(" %d dias ", $dias);
-						
-						}
-					 ?></td>
+						?>
+					</td>
 					<td>
 						<?php if(in_array("EDITAR", $permisosActuales)){ ?>
 							<i class="fas fa-edit"  data-toggle="modal" data-target="#modal" onclick="editarUsuario(<?php echo $usuario['id']; ?>)"></i>

@@ -17,6 +17,21 @@
 		$permisosActuales[] = $permiso['nombre'];
 	}
 	include_once 'header.php';
+	function getResponsivasByUser($usuario_id){
+		$total = [];
+
+		$dir =  $_SERVER['DOCUMENT_ROOT']."/haberholding/responsivas_usuarios/";
+		if(is_dir($dir)){
+			$files = scandir($dir);
+			foreach($files as $file){
+				if(strpos($file,$usuario_id."_") !== false){
+					$total[] = "/haberholding/responsivas_usuarios/$file";
+				}
+			}
+		}
+
+		return $total;
+	}
 ?>
 <div id="tabla" class="table-responsive-sm">
 	<table class="table DataTable">
@@ -27,6 +42,7 @@
 				<th>Departamento</th>
 				<th>Puesto</th>
 				<th>Antigüedad</th>
+				<th>Responsivas</th>
 				<th>Acciones</th>
 			</tr>
 		</thead>
@@ -65,6 +81,20 @@
 						
 						}
 					 ?></td>
+					
+					
+					<td> 
+						<?php 
+							$responsivas = (getResponsivasByUser($usuario['id'])) ;
+							if(empty($responsivas)){
+								echo "Sin Responsivas";
+							}else{
+								foreach($responsivas as $key =>  $responsiva){
+									echo "<a href='".$responsiva."'>". ($key+1)."</a><br>";
+								}
+							}
+						?>
+					</td>
 					<td>
 						<?php if(in_array("EDITAR", $permisosActuales)){ ?>
 							<i class="fas fa-edit"  data-toggle="modal" data-target="#modal" onclick="editarUsuario(<?php echo $usuario['id']; ?>)"></i>
